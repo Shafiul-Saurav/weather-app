@@ -1,8 +1,19 @@
-<script setup></script>
+<script setup>
+//All Libraries
+// import { onMounted } from "vue";
+import { useWeatherStore } from "./stores/weather";
+
+//Instance or Object
+const weatherStore = useWeatherStore();
+//Method or Function
+
+//Computed, Watches and Hooks
+// onMounted(() => {});
+</script>
 
 <template>
   <div class="container">
-    <div class="row mt-5">
+    <div class="row mt-3 d-flex justify-content-center">
       <div class="col-md-5">
         <div class="row">
           <div class="col-md-12">
@@ -10,18 +21,37 @@
               <div class="wrap">
                 <div class="search_box">
                   <input
+                    v-model="weatherStore.location_query"
+                    @keypress="weatherStore.fetchWeather"
                     class="form-control search_bar"
                     type="search"
                     placeholder="Search"
                   />
                 </div>
-                <div class="mt-5">
+                <div class="mt-5" v-if="weatherStore.weather.main != undefined">
                   <div class="card bg_transparent">
                     <div class="card-body text-white text-center">
-                      <h3>Dhaka</h3>
-                      <p>29/10/2023</p>
-                      <p class="temp">32°C</p>
-                      <p class=""></p>
+                      <h3>
+                        {{ weatherStore.weather.name }},
+                        {{ weatherStore.weather.sys.country }}
+                      </h3>
+                      <p>{{ new Date().toDateString() }}</p>
+                      <p class="temp">{{ weatherStore.weather.main.temp }} °C</p>
+                      <p class="weather">{{ weatherStore.weather.weather[0].main }}</p>
+                      <div class="weather_icon">
+                        <img
+                          :src="`https://openweathermap.org/img/wn/${weatherStore.weather.weather[0].icon}@2x.png`"
+                          alt=""
+                        />
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <p class="presure">
+                          Pressure: {{ weatherStore.weather.main.pressure }} hPa
+                        </p>
+                        <p class="humidity">
+                          Humidity: {{ weatherStore.weather.main.humidity }} %
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -50,7 +80,7 @@
 }
 
 .wrap {
-  height: 600px;
+  height: 630px;
   padding: 25px;
   border-radius: 25px;
   background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.4));
@@ -86,7 +116,7 @@
   display: inline-block;
   padding: 10px 25px;
   color: #fff;
-  font-size: 100px;
+  font-size: 70px;
   font-weight: 900;
   text-shadow: 3px 6px rgba(0, 0, 0, 0.25);
   background-color: rgba(255, 255, 255, 0.25);
